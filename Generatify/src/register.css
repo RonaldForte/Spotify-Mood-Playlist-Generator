@@ -1,6 +1,6 @@
 body {
     background-color: #191414; /* Spotify-like dark background */
-    background-image: url('../public/register/spotify.png'); /* Replace with the path to your image */
+    background-image: url('../public/spotify.png'); /* Replace with the path to your image */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover; /* Ensures the image covers the whole background */
@@ -22,7 +22,7 @@ body {
 .form-container {
     max-width: 400px;
     padding: 20px;
-    background-image: url(../public/register/gradient.jpg);
+    background-image: url(../public/gradient.jpg);
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     text-align: center;
