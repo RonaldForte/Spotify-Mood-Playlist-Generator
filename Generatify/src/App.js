@@ -1,77 +1,46 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Register from './Register';
+import Home from './Home'; 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import './App.css';
+
+// Your Firebase configuration
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+};
+
+initializeApp(firebaseConfig);
+const auth = getAuth();
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Register />} />
-      <Route path="/home" element={<Home />} />
-    </Routes>
-  );
-}
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-function Home() {
-  const [genres, setGenres] = React.useState("");
-  const [userDay, setUserDay] = React.useState("");
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const openUrl = "https://api.openai.com/v1/chat/completions";
-  const openApiKey = process.env.REACT_APP_OPENAI_API_KEY;
-
-  async function fetchData() {
-    try {
-      const response = await fetch(openUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openApiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: `Generate a list of music genres of size 5 for the day described as: "${userDay}" only using spotify genres` }],
-          max_tokens: 30
-        })
-      });
-
-      if (response.status === 429) {
-        console.error('Rate limit exceeded.');
-      }
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("API Response:", data);
-
-      const fetchedGenres = data.choices[0]?.message?.content.trim() || "No genres found.";
-      setGenres(fetchedGenres);
-      console.log("Suggested music genres:", fetchedGenres);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="container">
-      <h1 className="heading">Generate a Spotify Playlist</h1>
-      <input
-        id="moodInput"
-        className="input"
-        type="text"
-        placeholder="How are you feeling today?"
-        value={userDay}
-        onChange={(e) => setUserDay(e.target.value)}
-      />
-      <button id="searchButton" className="search" onClick={fetchData}>
-        Search
-      </button>
-      <div>
-        <h2>Suggested Music Genres:</h2>
-        <p>{genres}</p>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Register />} />
+      <Route path="/home" element={user ? <Home /> : <Navigate to="/" />} />
+    </Routes>
   );
 }
 

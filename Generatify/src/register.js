@@ -1,22 +1,6 @@
 import React, { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
-
-// Your Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
 function Register() {
   const [isRegister, setIsRegister] = useState(false);
@@ -30,29 +14,16 @@ function Register() {
     event.preventDefault();
     const email = event.target.elements['register-email'].value;
     const password = event.target.elements['register-password'].value;
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        alert('User registered successfully!');
-        handleFormSwitch(false);
-      })
-      .catch((error) => {
-        alert(`Error: ${error.message}`);
-      });
   };
 
   const handleLogin = (event) => {
     event.preventDefault();
     const email = event.target.elements['login-email'].value;
     const password = event.target.elements['login-password'].value;
+  };
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        navigate('/Home');
-      })
-      .catch((error) => {
-        alert(`Error: ${error.message}`);
-      });
+  const handleSpotifyLogin = () => {
+    window.location.href = 'http://localhost:5000/login'
   };
 
   return (
@@ -73,6 +44,9 @@ function Register() {
             <button type="submit">Generatify Now!</button>
             <p>Don't have an account? <a href="#" onClick={() => handleFormSwitch(true)}>Register here</a></p>
           </form>
+          <button onClick={handleSpotifyLogin} className="spotify-login-button">
+            Log in with Spotify
+          </button>
         </div>
 
         <div id="registerFormContainer" className={`form-container ${isRegister ? '' : 'hidden'}`}>
