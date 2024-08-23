@@ -54,24 +54,26 @@ function Home() {
   }
 
   return (
-    <div className="container">
-      <h1 className="heading">Generate a Spotify Playlist</h1>
-      <input
-        id="moodInput"
-        className="input"
-        type="text"
-        placeholder="How are you feeling today?"
-        value={userDay}
-        onChange={(e) => setUserDay(e.target.value)}
-      />
-      <button id="searchButton" className="search" onClick={fetchData}>
-        Search
-      </button>
-      <div>
-        <h2>Suggested Music Genres:</h2>
-        <p>{genres}</p>
+    <>
+      <div className="background"> </div>
+      <div className="container">
+        <h1 className="heading">Generate a Spotify Playlist</h1>
+        <input
+          id="moodInput"
+          type="text"
+          placeholder="How are you feeling today?"
+          value={userDay}
+          onChange={(e) => setUserDay(e.target.value)}
+        />
+        <button className="search" onClick={fetchData}>
+          Generate 
+        </button>
+        <div>
+          <h2 className="suggested">Suggested Music Genres:</h2>
+          <p>{genres}</p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
