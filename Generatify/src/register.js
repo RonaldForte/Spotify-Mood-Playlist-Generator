@@ -1,22 +1,8 @@
 import React, { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import './Register.css';
-
-// Your Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth } from './firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import './register.css';
 
 function Register() {
   const [isRegister, setIsRegister] = useState(false);
@@ -55,6 +41,10 @@ function Register() {
       });
   };
 
+  const handleSpotifyLogin = () => {
+    window.location.href = 'http://localhost:5000/login';
+  };
+
   return (
     <div className="register-background">
       <div className="login-container">
@@ -73,6 +63,9 @@ function Register() {
             <button type="submit">Generatify Now!</button>
             <p>Don't have an account? <a href="#" onClick={() => handleFormSwitch(true)}>Register here</a></p>
           </form>
+          <button onClick={handleSpotifyLogin} className="spotify-login-button">
+            Log in with Spotify
+          </button>
         </div>
 
         <div id="registerFormContainer" className={`form-container ${isRegister ? '' : 'hidden'}`}>
