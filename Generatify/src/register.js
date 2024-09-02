@@ -41,10 +41,6 @@ function Register() {
       });
   };
 
-  const handleSpotifyLogin = () => {
-    window.location.href = 'http://localhost:5000/login';
-  };
-
   return (
     <div className="register-background">
       <div className="login-container">
@@ -63,9 +59,6 @@ function Register() {
             <button type="submit">Generatify Now!</button>
             <p>Don't have an account? <a href="#" onClick={() => handleFormSwitch(true)}>Register here</a></p>
           </form>
-          <button onClick={handleSpotifyLogin} className="spotify-login-button">
-            Log in with Spotify
-          </button>
         </div>
 
         <div id="registerFormContainer" className={`form-container ${isRegister ? '' : 'hidden'}`}>

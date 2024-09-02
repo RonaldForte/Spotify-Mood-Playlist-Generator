@@ -1,8 +1,11 @@
 const express = require('express');
 const querystring = require('querystring');
 const axios = require('axios');
+const cookieParser = require('cookie-parser');
 const app = express();
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({ path: '../.env' });
+
+app.use(cookieParser());
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -19,7 +22,7 @@ function generateRandomString(length) {
 
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
-  const scope = 'user-read-private user-read-email';
+  const scope = 'playlist-modify-private playlist-read-private';
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -46,7 +49,16 @@ app.get('/callback', async (req, res) => {
     });
 
     const accessToken = response.data.access_token;
-    res.send(`Logged in successfully with Spotify! Access Token: ${accessToken}`);
+
+    res.cookie('spotify_access_token', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      path: '/',
+      domain: 'localhost'
+    });
+
+    res.redirect('http://localhost:3000/Home');
   } catch (error) {
     console.error('Error during Spotify callback:', error);
     res.status(500).send('An error occurred during authentication.');
